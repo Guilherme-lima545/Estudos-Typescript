@@ -1,0 +1,66 @@
+import countBy from "./countBy.js";
+function filtrarvalor(transacao) {
+    return transacao.valor !== null;
+}
+export default class Estatisticas {
+    transacoes;
+    total;
+    pagamento;
+    status;
+    semana;
+    melhorDia;
+    constructor(transacoes) {
+        this.transacoes = transacoes;
+        this.total = this.settotal();
+        this.pagamento = this.setpagamento();
+        this.status = this.setstatus();
+        this.semana = this.setSemana();
+        this.melhorDia = this.setMelhordia();
+    }
+    settotal() {
+        return this.transacoes.filter(filtrarvalor).reduce((acc, item) => {
+            return acc + item.valor;
+        }, 0);
+    }
+    setpagamento() {
+        return countBy(this.transacoes.map(({ pagamento }) => pagamento));
+    }
+    setstatus() {
+        return countBy(this.transacoes.map(({ status }) => status));
+    }
+    setSemana() {
+        const semana = {
+            ["Domingo"]: 0,
+            ["Segunda"]: 0,
+            ["Terça"]: 0,
+            ["Quarta"]: 0,
+            ["Quinta"]: 0,
+            ["Sexta"]: 0,
+            ["Sabado"]: 0,
+        };
+        for (let i = 0; i < this.transacoes.length; i++) {
+            const day = this.transacoes[i].data.getDay();
+            if (day === 0)
+                semana["Domingo"] += 1;
+            if (day === 0)
+                semana["Segunda"] += 1;
+            if (day === 0)
+                semana["Terça"] += 1;
+            if (day === 0)
+                semana["Quarta"] += 1;
+            if (day === 0)
+                semana["Quinta"] += 1;
+            if (day === 0)
+                semana["Sexta"] += 1;
+            if (day === 0)
+                semana["Sabado"] += 1;
+        }
+        return semana;
+    }
+    setMelhordia() {
+        return Object.entries(this.semana).sort((a, b) => {
+            return b[1] - a[1];
+        })[0];
+    }
+}
+//# sourceMappingURL=Estatisticas.js.map
